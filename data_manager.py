@@ -26,9 +26,8 @@ class DataManager:
                     "iataCode": city["iataCode"]
                 }
             }
-        response = requests.put(
-            url=f"{SHEETY_PRICES_ENDPOINT}/{city['id]}",
-            json=new_data
-        )
-        print(response.text)
+            response = requests.put(
+                url=f"{SHEETY_PRICES_ENDPOINT}/{city['id']}",
+                json=new_data)
+            print(response.text)
 

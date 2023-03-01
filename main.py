@@ -3,30 +3,28 @@ import requests
 from data_manager import DataManager
 from flight_search import FlightSearch
 
-SHEET_NAME = "prices"
-SHEETY_ENDPOINT = "https://api.sheety.co/35eee830991c22f8d195d5bdad73dfee/flightDeals/"
+# Start the class
 data_manager = DataManager()
+
+# Grab the data from the spreadsheet
 sheet_data = data_manager.get_destination_data()
-print(sheet_data)
-for row in sheet_data:
-    if not row['iataCode']:
-        city = row['city']
-        flight_search = FlightSearch()
-        iata_code = flight_search.search_flights(city)
-        row['iataCode'] = iata_code
-
-        # Update the Google Sheet with the new IATA COde using Sheety
-        sheet_id = row['id']
-        sheet_url = f"{SHEETY_ENDPOINT}/{SHEET_NAME}/{sheet_id}"
-        new_data = {"price": {"iataCode": row['iataCode']}}
-        response = requests.put(sheet_url, json=new_data)
-        print(response.json())
 
 
+#  5. In main.py check if sheet_data contains any values for the "iataCode" key.
+#  If not, then the IATA Codes column is empty in the Google Sheet.
+#  In this case, pass each city name in sheet_data one-by-one
+#  to the FlightSearch class to get the corresponding IATA code
+#  for that city using the Flight Search API.
+#  You should use the code you get back to update the sheet_data dictionary.
 
-print("This is after the For call")
-print(sheet_data)
+if sheet_data[0]["iataCode"] == "":
+    from flight_search import FlightSearch
+    flight_search = FlightSearch()
+    for row in sheet_data:
+        row["iataCode"] = flight_search.get_destination_code(row["city"])
+    print(f"sheet_data:\n {sheet_data}")
+
+    data_manager.get_destination_data = sheet_data
+    data_manager.update_destination_codes()
 
 
-
-#This file will need to use the DataManager,FlightSearch, FlightData, NotificationManager classes to achieve the program requirements.
