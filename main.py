@@ -3,7 +3,7 @@ import requests
 from data_manager import DataManager
 from flight_search import FlightSearch
 
-SHEET_NAME = "prices2"
+SHEET_NAME = "prices"
 SHEETY_ENDPOINT = "https://api.sheety.co/35eee830991c22f8d195d5bdad73dfee/flightDeals/"
 data_manager = DataManager()
 sheet_data = data_manager.get_destination_data()
